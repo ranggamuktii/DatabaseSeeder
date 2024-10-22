@@ -1,5 +1,4 @@
 import mongoose from 'mongoose';
-import fs from 'fs';
 import seed from './seed.json' assert { type: 'json' };
 import dotenv from 'dotenv';
 
@@ -37,6 +36,11 @@ async function main() {
       break;
     case 'bulk-insert':
       await MovieModel.insertMany(seed);
+      break;
+    case 'get-all':
+      const movies = await MovieModel.find();
+      console.log(movies);
+
       break;
     default:
       throw Error('command not found');
