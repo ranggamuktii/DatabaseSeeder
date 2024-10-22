@@ -33,6 +33,7 @@ async function main() {
       await checkConnection();
       break;
     case 'reset-db':
+      await MovieModel.deleteMany();
       break;
     case 'bulk-insert':
       await MovieModel.insertMany(seed);
