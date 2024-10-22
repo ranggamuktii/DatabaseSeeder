@@ -11,6 +11,7 @@
   "license": "ISC",
   "dependencies": {
     "databaseseeder": "file:",
+    "dotenv": "^16.4.5",
     "mongoose": "^8.7.2"
   }
 }
