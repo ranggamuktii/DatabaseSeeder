@@ -1,21 +1,41 @@
-require('dotenv').config();
-const { MongoClient } = require('mongodb');
+import mongoose from 'mongoose';
+import dotenv from 'dotenv';
 
-// Replace the following with your Atlas connection string
-const mongoUri = process.env.MONGODB_URI;
+dotenv.config();
 
-// Connect to your Atlas cluster
-const client = new MongoClient(mongoUri);
+async function main() {
+  const mongoUri = process.env.MONGODB_URI;
+  const mongoCollection = process.env.MONGODB_COLLECTION;
 
-async function run() {
-  try {
-    await client.connect();
-    console.log('Successfully connected to Atlas');
-  } catch (err) {
-    console.log(err.stack);
-  } finally {
-    await client.close();
+  const args = process.argv.slice(2);
+  const command = args[0];
+
+  await mongoose.connect(mongoUri);
+
+  const schema = new mongoose.Schema({}, { strict: false });
+  const Model = mongoose.model(mongoCollection, schema);
+
+  switch (command) {
+    case 'check-db-connection':
+      await checkConnection();
+      break;
+    default:
+      throw Error('command not found');
   }
+
+  await mongoose.disconnect();
+  return;
 }
 
-run().catch(console.dir);
+async function checkConnection() {
+  console.log('check db connection started...');
+  try {
+    await mongoose.connection.db.admin().ping();
+    console.log('Successfully connected to Atlas');
+  } catch (err) {
+    console.error('MongoDB connection failed:', err);
+  }
+  console.log('check db connection ended...');
+}
+
+main();
